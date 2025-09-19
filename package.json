@@ -19,7 +19,8 @@
     "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
     "dev:network": "concurrently \"npm run server:host\" \"npm run dev\"",
     "dev:https:full": "concurrently \"npm run server:https\" \"npm run dev:https\"",
-    "dev:https:network": "concurrently \"npm run server:https:host\" \"npm run dev:https\""
+    "dev:https:network": "concurrently \"npm run server:https:host\" \"npm run dev:https\"",
+    "vercel-build": "vite build"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.0.2",

@@ -1,0 +1,50 @@
+# Files and directories to ignore during Vercel deployment
+
+# Development server files
+server/
+
+# SSL certificates (not needed on Vercel)
+certs/
+
+# Development documentation
+HTTPS_SETUP.md
+MONGODB_SETUP.md
+SETUP.md
+
+# Test files
+test-network.html
+
+# Development dependencies
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Build artifacts (except dist/ which is needed)
+.next/
+out/
+
+# Temporary files
+*.tmp
+*.temp

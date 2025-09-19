@@ -1,14 +1,20 @@
 // API Configuration for MongoDB Backend
 const getBaseURL = () => {
+  // Check if we're running on Vercel (production)
+  if (window.location.hostname.includes('vercel.app') || process.env.NODE_ENV === 'production') {
+    // On Vercel, API routes are served from the same domain
+    return `${window.location.protocol}//${window.location.hostname}/api`;
+  }
+  
   // Check if we're running on HTTPS
   const isHTTPS = window.location.protocol === 'https:';
   const protocol = isHTTPS ? 'https' : 'http';
   
-  // Determine the appropriate port based on protocol
+  // Determine the appropriate port based on protocol for local development
   const getPort = () => {
     if (isHTTPS) {
       // Use HTTPS port (3443) for secure connections
-      return process.env.NODE_ENV === 'production' ? '443' : '3443';
+      return '3443';
     } else {
       // Use HTTP port (3001) for non-secure connections
       return '3001';
@@ -17,9 +23,8 @@ const getBaseURL = () => {
   
   const port = getPort();
   
-  // In production or when accessing from network, use the host's IP
-  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    // Use the same hostname as the frontend with appropriate port for API
+  // In local network development, use the host's IP with appropriate port
+  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && !window.location.hostname.includes('vercel.app')) {
     return `${protocol}://${window.location.hostname}:${port}/api`;
   }
   
