@@ -5,15 +5,31 @@
 Your SahiSamasya platform is now successfully connected to MongoDB. Here's how to test it:
 
 ## 🔧 **Current Status**
-- ✅ **Backend Server**: Running on `http://localhost:3001`
+- ✅ **Backend Server**: Running on `http://localhost:3001` (HTTP) and `https://localhost:3443` (HTTPS)
 - ✅ **MongoDB**: Connected to your Atlas cluster
 - ✅ **Database**: `SahiSamasya` with 2 users, 1 complaint, 1 upvote
-- ✅ **Authentication**: JWT-based login system
-- ✅ **API Endpoints**: All working correctly
+- ✅ **Authentication**: JWT-based login system with secure cookies
+- ✅ **API Endpoints**: All working correctly with HTTPS support
+- ✅ **Security**: Helmet.js, HSTS, secure cookies, and CORS configured
 
 ## 🧪 **How to Test**
 
 ### **1. Start the Application**
+
+#### **Option A: HTTPS (Recommended)**
+```bash
+# Start both backend and frontend with HTTPS
+npm run dev:https:full
+
+# Or start them separately:
+# Terminal 1: Backend with HTTPS
+npm run server:https
+
+# Terminal 2: Frontend with HTTPS
+npm run dev:https
+```
+
+#### **Option B: HTTP (Fallback)**
 ```bash
 # Terminal 1: Start backend server
 npm run server

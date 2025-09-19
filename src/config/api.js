@@ -1,12 +1,30 @@
 // API Configuration for MongoDB Backend
 const getBaseURL = () => {
+  // Check if we're running on HTTPS
+  const isHTTPS = window.location.protocol === 'https:';
+  const protocol = isHTTPS ? 'https' : 'http';
+  
+  // Determine the appropriate port based on protocol
+  const getPort = () => {
+    if (isHTTPS) {
+      // Use HTTPS port (3443) for secure connections
+      return process.env.NODE_ENV === 'production' ? '443' : '3443';
+    } else {
+      // Use HTTP port (3001) for non-secure connections
+      return '3001';
+    }
+  };
+  
+  const port = getPort();
+  
   // In production or when accessing from network, use the host's IP
   if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    // Use the same hostname as the frontend but port 3001 for API
-    return `http://${window.location.hostname}:3001/api`;
+    // Use the same hostname as the frontend with appropriate port for API
+    return `${protocol}://${window.location.hostname}:${port}/api`;
   }
+  
   // Default to localhost for local development
-  return 'http://localhost:3001/api';
+  return `${protocol}://localhost:${port}/api`;
 };
 
 const BASE_URL = getBaseURL();

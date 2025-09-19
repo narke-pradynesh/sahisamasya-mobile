@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
-const JWT_SECRET = 'your-super-secret-jwt-key-change-this-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
 
 export const authenticateToken = async (req, res, next) => {
   try {
@@ -49,5 +49,20 @@ export const requireAdmin = (req, res, next) => {
 };
 
 export const generateToken = (userId) => {
-  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
+  const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
+  return jwt.sign({ userId }, JWT_SECRET, { expiresIn });
+};
+
+// Cookie configuration helper
+export const getCookieOptions = () => {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const isHTTPS = process.env.ENABLE_HTTPS === 'true';
+  
+  return {
+    httpOnly: true, // Prevent XSS attacks
+    secure: isHTTPS || isProduction, // Only send over HTTPS in production
+    sameSite: process.env.COOKIE_SAME_SITE || (isProduction ? 'strict' : 'lax'), // CSRF protection
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+    path: '/' // Cookie available for entire domain
+  };
 };

@@ -1,7 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
-import { generateToken } from '../middleware/auth.js';
+import { generateToken, getCookieOptions } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -38,6 +38,10 @@ router.post('/register', async (req, res) => {
 
     // Generate token
     const token = generateToken(user._id);
+    
+    // Set secure cookie
+    const cookieOptions = getCookieOptions();
+    res.cookie('auth_token', token, cookieOptions);
 
     res.status(201).json({
       success: true,
@@ -91,6 +95,10 @@ router.post('/login', async (req, res) => {
 
     // Generate token
     const token = generateToken(user._id);
+    
+    // Set secure cookie
+    const cookieOptions = getCookieOptions();
+    res.cookie('auth_token', token, cookieOptions);
 
     res.json({
       success: true,
@@ -120,7 +128,7 @@ router.get('/me', async (req, res) => {
       });
     }
 
-    const JWT_SECRET = 'your-super-secret-jwt-key-change-this-in-production';
+    const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
     const decoded = jwt.verify(token, JWT_SECRET);
     
     const user = await User.findById(decoded.userId).select('-password');
@@ -140,6 +148,30 @@ router.get('/me', async (req, res) => {
     res.status(401).json({
       success: false,
       message: 'Invalid token'
+    });
+  }
+});
+
+// Logout user (clear secure cookie)
+router.post('/logout', (req, res) => {
+  try {
+    // Clear the auth cookie
+    res.clearCookie('auth_token', {
+      httpOnly: true,
+      secure: process.env.ENABLE_HTTPS === 'true' || process.env.NODE_ENV === 'production',
+      sameSite: process.env.COOKIE_SAME_SITE || 'lax',
+      path: '/'
+    });
+
+    res.json({
+      success: true,
+      message: 'Logout successful'
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Logout failed. Please try again.'
     });
   }
 });
